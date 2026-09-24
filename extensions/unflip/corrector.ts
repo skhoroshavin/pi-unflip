@@ -4,7 +4,7 @@ const CORRECTOR_MODEL = "neuralwatt/deepseek-v4-flash";
 
 export async function fixText(text: string, registry: ModelRegistry, signal?: AbortSignal): Promise<string | null> {
   const [provider, id] = CORRECTOR_MODEL.split("/");
-  const model = provider && id ? registry.find(provider, id) : undefined;
+  const model = registry.find(provider, id);
   if (!model) return null;
   try {
     const response = await registry.streamSimple(model, {

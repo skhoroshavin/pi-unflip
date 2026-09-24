@@ -21,4 +21,4 @@ const HANGUL = /[\uac00-\ud7af]/g;
 // Latin or Cyrillic letters
 const WESTERN = /[a-z\u0400-\u04ff]/gi;
 // A run of Latin+Cyrillic letters containing at least one of each ("poль")
-const MIXED_WORD = /(?=[a-z\u0400-\u04ff]*[\u0400-\u04ff])(?=[a-z\u0400-\u04ff]*[a-z])[a-z\u0400-\u04ff]+/i;
+const MIXED_WORD = /[a-z]+[\u0400-\u04ff]+|[\u0400-\u04ff]+[a-z]+/i;
