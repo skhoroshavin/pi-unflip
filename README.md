@@ -8,6 +8,8 @@ Fixes corrupted prose in coding-agent responses. Some providers return text with
 pi install npm:pi-unflip
 ```
 
+> So far works only with the NeuralWatt provider (`~/.pi/agent/models.json` entry + `NEURALWATT_API_KEY`); without it, corrupted messages keep the original and warn.
+
 ## License
 
 MIT. See [LICENSE](./LICENSE).

@@ -1,0 +1,22 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Typecheck
+        run: |
+          npm ci
+          npx tsc --noEmit
+      - name: Test
+        env:
+          NEURALWATT_API_KEY: ${{ secrets.NEURALWATT_API_KEY }}
+        run: npm test

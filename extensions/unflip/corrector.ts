@@ -10,7 +10,7 @@ export async function fixText(text: string, registry: ModelRegistry, signal?: Ab
     const response = await registry.streamSimple(model, {
       systemPrompt: CORRECTION_PROMPT,
       messages: [{ role: "user", content: [{ type: "text", text }], timestamp: Date.now() }],
-    }, { signal, samplingParams: { reasoning_effort: "none" } }).result();
+    }, { signal, temperature: 0, samplingParams: { reasoning_effort: "none" } }).result();
     if (response.stopReason !== "stop" || signal?.aborted) return null;
     const fixed = response.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
     if (!fixed) return null;

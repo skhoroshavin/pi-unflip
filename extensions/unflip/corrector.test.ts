@@ -32,7 +32,10 @@ test("fixes hanzi flips in Korean text", { skip }, async () => {
 
 let registryPromise: Promise<ModelRegistry> | undefined;
 function registry(): Promise<ModelRegistry> {
-  return (registryPromise ??= ModelRuntime.create({}).then((r) => new ModelRegistry(r)));
+  return (registryPromise ??= ModelRuntime.create({
+    modelsPath: new URL("./models.fixture.json", import.meta.url).pathname,
+    modelsStorePath: "/tmp/pi-unflip-models-store.json",
+  }).then((r) => new ModelRegistry(r)));
 }
 
 async function fixAndCheck(sample: string): Promise<string> {
