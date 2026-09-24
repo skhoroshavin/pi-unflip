@@ -5,7 +5,7 @@
     "type": "git",
     "url": "git+https://github.com/skhoroshavin/pi-unflip.git"
   },
-  "description": "detects and fixes corrupted Russian text (stray CJK, Latin/Cyrillic homoglyph flips) in pi assistant responses",
+  "description": "detects and fixes corrupted assistant text (stray CJK, Latin/Cyrillic homoglyph flips) in pi responses",
   "keywords": [
     "pi-package"
   ],

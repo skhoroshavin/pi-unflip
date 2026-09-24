@@ -30,6 +30,8 @@ test("stays quiet on standalone Latin letters in Cyrillic prose", () => {
   assert.equal(needsFix("Коэффициенты x, y и z подобраны, точка a лежит на кривой."), false);
   assert.equal(needsFix("Поколения 'X' и \"Z\""), false);
   assert.equal(needsFix("Координаты (x, y)"), false);
+  // flipped standalone preposition is an accepted miss
+  assert.equal(needsFix("Она выполнила задачу c первого раза."), false);
 });
 
 test("stays quiet on clean Cyrillic-script text", () => {
