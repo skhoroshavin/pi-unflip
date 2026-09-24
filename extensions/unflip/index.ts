@@ -23,7 +23,7 @@ export default function (pi: ExtensionAPI) {
       let changed = false;
       for (let i = 0; i < content.length; i++) {
         const block = content[i];
-        if (block.type !== "text") continue;
+        if (block.type !== "text" || !block.text) continue;
         const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
         if (fixed === null) {
           ctx.ui.notify("unflip: correction failed, keeping original", "warning");
