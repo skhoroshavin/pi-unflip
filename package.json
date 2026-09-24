@@ -17,7 +17,6 @@
   "files": [
     "extensions/",
     "!extensions/unflip/*.test.ts",
-    "!extensions/unflip/*.e2e.ts",
     "LICENSE",
     "README.md"
   ],
