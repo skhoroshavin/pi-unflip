@@ -5,8 +5,7 @@ message_end and rewrites the text blocks via a corrector model. Fail-open everyw
 
 ## Commands
 
-- Typecheck: `npx tsc --noEmit`
-- Test: `npm test` (live corrector tests need `NEURALWATT_API_KEY`, skipped without it)
+- Test: `npm test` - typechecks first, then runs tests (live corrector tests need `NEURALWATT_API_KEY`, skipped without it)
 
 ## Rules
 

@@ -11,7 +11,7 @@
   ],
   "type": "module",
   "scripts": {
-    "test": "node --test extensions/unflip/*.test.ts"
+    "test": "tsc --noEmit && node --test extensions/unflip/*.test.ts"
   },
   "license": "MIT",
   "files": [
