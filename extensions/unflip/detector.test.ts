@@ -10,29 +10,32 @@ test("stays quiet on Latin-script text", () => {
 });
 
 test("fires on CJK glued into English prose", () => {
-  assert.ok(needsFix("The migration ran clean, 报告 and the index is rebuilt."));
   assert.ok(needsFix("The cache server 报告 is warm, so sessions persist across restarts."));
+  assert.ok(needsFix("The migration ran报告 clean and the index is rebuilt."));
 });
 
 test("fires on Cyrillic homoglyph flips in English prose", () => {
   assert.ok(needsFix("The сache is warm, and the рipeline is green."));
+  assert.ok(needsFix("The buіld succeeded, tests passed."));
 });
 
-test("fires on corrupted Russian prose", () => {
+test("fires on corrupted Cyrillic prose", () => {
   assert.ok(needsFix("Двойной poль в этом сценaрии выглядит стpaнно, но poль всё же важна."));
   assert.ok(needsFix("sтвол дерева достаточно толстый."));
   assert.ok(needsFix("Раcсказ получилсja коротким, но ёмким."));
+  assert.ok(needsFix("Скрiпт завершив роботу, тести зелені."));
 });
 
-test("stays quiet on standalone Latin letters in Russian prose", () => {
+test("stays quiet on standalone Latin letters in Cyrillic prose", () => {
   assert.equal(needsFix("Коэффициенты x, y и z подобраны, точка a лежит на кривой."), false);
   assert.equal(needsFix("Поколения 'X' и \"Z\""), false);
   assert.equal(needsFix("Координаты (x, y)"), false);
 });
 
-test("stays quiet on clean Russian", () => {
+test("stays quiet on clean Cyrillic-script text", () => {
   assert.equal(needsFix("Роль назначена, права выданы, всё работает с 24/7 аптаймом."), false);
   assert.equal(needsFix("Готово: файлы src/index.ts и package.json обновлены, тесты зелёные."), false);
+  assert.equal(needsFix("Міґрацію завершено, індекс перебудовано, тести зелені, див. report.md для деталей."), false);
 });
 
 test("fires on hanzi flips in Korean text", () => {
