@@ -29,7 +29,7 @@ export default function (pi: ExtensionAPI) {
       }
     }
     if (!started) return;
-    ctx.ui.notify(changed ? "Corrupted text fixed" : "Nothing to fix");
+    ctx.ui.notify("Corrupted text fixed");
     if (changed) return { message: { ...message, content } };
   });
 }
