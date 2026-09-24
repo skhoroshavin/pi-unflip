@@ -13,7 +13,7 @@ function hasCJKFlip(text: string): boolean {
 }
 
 // Hiragana + katakana
-const KANA = /[\u3040-\u30ff]/g;
+const KANA = /[\u3040-\u30ff]/;
 // CJK ideographs (ext A, unified, compat)
 const HANZI = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/g;
 // Hangul syllables
