@@ -13,13 +13,17 @@ export default function (pi: ExtensionAPI) {
     }
     if (!needsFix(text)) return;
 
-    ctx.ui.notify("Fixing corrupted text...");
+    let announced = false;
     const content = [...message.content];
     let changed = false;
     for (let i = 0; i < content.length; i++) {
       const block = content[i];
       if (block.type !== "text" || !block.text) continue;
       if (!needsFix(block.text)) continue;
+      if (!announced) {
+        ctx.ui.notify("Fixing corrupted text...");
+        announced = true;
+      }
       const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
       if (fixed === null) {
         ctx.ui.notify("Correction failed, keeping original");
@@ -31,7 +35,7 @@ export default function (pi: ExtensionAPI) {
       }
     }
     if (!changed) {
-      ctx.ui.notify("Nothing to fix");
+      if (announced) ctx.ui.notify("Nothing to fix");
       return;
     }
     ctx.ui.notify("Corrupted text fixed");
