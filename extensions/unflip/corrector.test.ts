@@ -21,6 +21,11 @@ test("fixes corrupted Russian prose", { skip }, async () => {
   await fixAndCheck("Она выполнила задачу c первого раза, и отчёт c цифрами приложен.");
 });
 
+test("reconstructs CJK phrases instead of discarding", { skip }, async () => {
+  const fixed = await fixAndCheck("Обновление сломало сборку, но фикс уже в测试, скоро выкачу.");
+  assert.ok(fixed.includes("в тесте"), fixed);
+});
+
 test("fixes hanzi flips in Korean text", { skip }, async () => {
   await fixAndCheck("마이그레이션이 완료되었고 报告 인덱스가 다시 생성되었습니다.");
 });
@@ -30,9 +35,10 @@ function registry(): Promise<ModelRegistry> {
   return (registryPromise ??= ModelRuntime.create({}).then((r) => new ModelRegistry(r)));
 }
 
-async function fixAndCheck(sample: string): Promise<void> {
+async function fixAndCheck(sample: string): Promise<string> {
   const fixed = await fixText(sample, await registry());
   assert.ok(fixed, `no fix for: ${sample}`);
   assert.ok(!needsFix(fixed), `still corrupted: ${fixed}`);
   console.log(fixed);
+  return fixed;
 }
