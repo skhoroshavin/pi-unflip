@@ -11,16 +11,19 @@
   ],
   "type": "module",
   "scripts": {
-    "test": "node --test test/*.test.ts"
+    "test": "node --test extensions/unflip/*.test.ts"
   },
   "license": "MIT",
   "files": [
     "extensions/",
+    "!extensions/unflip/*.test.ts",
+    "!extensions/unflip/*.e2e.ts",
     "LICENSE",
     "README.md"
   ],
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "^0.87.1",
+    "@types/node": "^26.6.2",
     "typescript": "^7.0.2"
   }
 }

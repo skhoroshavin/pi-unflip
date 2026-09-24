@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { needsFix } from "../extensions/unflip/detector.ts";
+import { needsFix } from "./detector.ts";
 
 test("stays quiet on pure English", () => {
   assert.equal(needsFix("The migration ran clean and the index is rebuilt, see report.md for details."), false);
