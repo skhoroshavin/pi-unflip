@@ -2,9 +2,11 @@ import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { needsFix } from "./detector.ts";
 
-test("stays quiet on pure English", () => {
+test("stays quiet on Latin-script text", () => {
   assert.equal(needsFix("The migration ran clean and the index is rebuilt, see report.md for details."), false);
   assert.equal(needsFix("Updated the config: maxTokens = 393216, contextWindow = 1048560."), false);
+  assert.equal(needsFix("Die Größe des Caches wurde erhöht, siehe config.yaml für Details."), false);
+  assert.equal(needsFix("La migración terminó correctamente, el índice quedó reconstruido."), false);
 });
 
 test("fires on CJK glued into English prose", () => {
