@@ -1,0 +1,19 @@
+{
+  "providers": {
+    "neuralwatt": {
+      "name": "NeuralWatt",
+      "baseUrl": "https://api.neuralwatt.com/v1",
+      "apiKey": "$NEURALWATT_API_KEY",
+      "api": "openai-completions",
+      "compat": { "supportsDeveloperRole": false, "supportsReasoningEffort": true },
+      "models": [{
+        "id": "deepseek-v4-flash",
+        "name": "DeepSeek V4 Flash",
+        "reasoning": true,
+        "thinkingLevelMap": { "off": "none" },
+        "contextWindow": 1048560,
+        "maxTokens": 393216
+      }]
+    }
+  }
+}
