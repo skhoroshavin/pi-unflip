@@ -18,7 +18,9 @@ const KANA = /[\u3040-\u30ff]/g;
 const HANZI = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/g;
 // Hangul syllables
 const HANGUL = /[\uac00-\ud7af]/g;
+const LATIN = "a-z";
+const CYRILLIC = "\\u0400-\\u04ff";
 // Latin or Cyrillic letters
-const WESTERN = /[a-z\u0400-\u04ff]/gi;
+const WESTERN = new RegExp(`[${LATIN}${CYRILLIC}]`, "gi");
 // A run of Latin+Cyrillic letters containing at least one of each ("poль")
-const MIXED_WORD = /(?=[a-z\u0400-\u04ff]*[\u0400-\u04ff])(?=[a-z\u0400-\u04ff]*[a-z])[a-z\u0400-\u04ff]+/i;
+const MIXED_WORD = new RegExp(`(?=[${LATIN}${CYRILLIC}]*[${CYRILLIC}])(?=[${LATIN}${CYRILLIC}]*[${LATIN}])[${LATIN}${CYRILLIC}]+`, "i");
