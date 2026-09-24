@@ -1,0 +1,23 @@
+{
+  "name": "pi-unflip",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skhoroshavin/pi-unflip.git"
+  },
+  "description": "detects and fixes corrupted Russian text (stray CJK, Latin/Cyrillic homoglyph flips) in pi assistant responses",
+  "keywords": [
+    "pi-package"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "extensions/",
+    "LICENSE",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.87.1",
+    "typescript": "^7.0.2"
+  }
+}
