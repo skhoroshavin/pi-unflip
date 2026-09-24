@@ -11,6 +11,6 @@ message_end and rewrites the text blocks via a corrector model. Fail-open everyw
 ## Rules
 
 - Fail-open: any error keeps the original message
-- Tool-call and thinking blocks are never touched (cache safety)
+- Rewrite only final assistant messages (stopReason "stop", no toolCall blocks); the message-level skip is the cache-safety guarantee, not the text-only loop
 - Smallest correct code; no speculative config or abstractions
 - No integrity gate on corrector output - rely on prompt and live tests
