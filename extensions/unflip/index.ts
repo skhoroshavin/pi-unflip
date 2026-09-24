@@ -6,23 +6,17 @@ export default function (pi: ExtensionAPI) {
   pi.on("message_end", async (event, ctx) => {
     const message = event.message;
     if (message.role !== "assistant" || message.stopReason !== "stop") return;
-    let text = "";
-    for (const block of message.content) {
-      if (block.type === "toolCall") return;
-      if (block.type === "text") text += block.text;
-    }
-    if (!needsFix(text)) return;
+    if (message.content.some((b) => b.type === "toolCall")) return;
 
-    let announced = false;
-    const content = [...message.content];
+    let started = false;
     let changed = false;
+    const content = [...message.content];
     for (let i = 0; i < content.length; i++) {
       const block = content[i];
-      if (block.type !== "text" || !block.text) continue;
-      if (!needsFix(block.text)) continue;
-      if (!announced) {
+      if (block.type !== "text" || !needsFix(block.text)) continue;
+      if (!started) {
         ctx.ui.notify("Fixing corrupted text...");
-        announced = true;
+        started = true;
       }
       const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
       if (fixed === null) {
@@ -34,11 +28,8 @@ export default function (pi: ExtensionAPI) {
         changed = true;
       }
     }
-    if (!changed) {
-      if (announced) ctx.ui.notify("Nothing to fix");
-      return;
-    }
-    ctx.ui.notify("Corrupted text fixed");
-    return { message: { ...message, content } };
+    if (!started) return;
+    ctx.ui.notify(changed ? "Corrupted text fixed" : "Nothing to fix");
+    if (changed) return { message: { ...message, content } };
   });
 }
