@@ -17,8 +17,8 @@ test("fixes Cyrillic homoglyph flips in English prose", { skip }, async () => {
 });
 
 test("fixes corrupted Russian prose", { skip }, async () => {
-  await fixAndCheck("Двойной poль в этом сценарии выглядит странно, но poль всё же важна.");
-  await fixAndCheck("Она выполнила задачу c первого раза, и отчёт c цифрами приложен.");
+  const fixed = await fixAndCheck("Двойной poль в этом сценарии выглядит странно. Она выполнила задачу c первого раза.");
+  assert.ok(fixed.includes("Двойная роль"), fixed);
 });
 
 test("reconstructs CJK phrases instead of discarding", { skip }, async () => {

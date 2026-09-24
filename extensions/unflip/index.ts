@@ -1,55 +1,35 @@
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { fixText } from "./corrector.ts";
 import { needsFix } from "./detector.ts";
-
-const STATUS_KEY = "unflip";
-const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 export default function (pi: ExtensionAPI) {
   pi.on("message_end", async (event, ctx) => {
     const message = event.message;
     if (message.role !== "assistant" || message.stopReason !== "stop") return;
-    let text = "";
-    for (const block of message.content) {
-      if (block.type === "toolCall") return;
-      if (block.type === "text") text += block.text;
-    }
-    if (!needsFix(text)) return;
+    if (message.content.some((b) => b.type === "toolCall")) return;
 
-    ctx.ui.notify("unflip: fixing corrupted text", "warning");
-    const stopSpinner = startSpinner(ctx);
-    try {
-      const content = [...message.content];
-      let changed = false;
-      for (let i = 0; i < content.length; i++) {
-        const block = content[i];
-        if (block.type !== "text" || !block.text) continue;
-        const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
-        if (fixed === null) {
-          ctx.ui.notify("unflip: correction failed, keeping original", "warning");
-          return;
-        }
-        if (fixed !== block.text) {
-          content[i] = { type: "text", text: fixed };
-          changed = true;
-        }
+    let started = false;
+    let changed = false;
+    const content = [...message.content];
+    for (let i = 0; i < content.length; i++) {
+      const block = content[i];
+      if (block.type !== "text" || !needsFix(block.text)) continue;
+      if (!started) {
+        ctx.ui.notify("Fixing corrupted text...");
+        started = true;
       }
-      if (changed) return { message: { ...message, content } };
-    } finally {
-      stopSpinner();
+      const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
+      if (fixed === null) {
+        ctx.ui.notify("Correction failed, keeping original");
+        return;
+      }
+      if (fixed !== block.text) {
+        content[i] = { type: "text", text: fixed };
+        changed = true;
+      }
     }
+    if (!started) return;
+    ctx.ui.notify("Corrupted text fixed");
+    if (changed) return { message: { ...message, content } };
   });
-}
-
-function startSpinner(ctx: ExtensionContext): () => void {
-  if (!ctx.hasUI) return () => {};
-  let frame = 0;
-  const render = () => ctx.ui.setStatus(STATUS_KEY, `${SPINNER_FRAMES[frame++ % SPINNER_FRAMES.length]} unflip: fixing`);
-  render();
-  const timer = setInterval(render, 120);
-  timer.unref?.();
-  return () => {
-    clearInterval(timer);
-    ctx.ui.setStatus(STATUS_KEY, undefined);
-  };
 }

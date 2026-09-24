@@ -4,7 +4,7 @@ const CORRECTOR_MODEL = "neuralwatt/deepseek-v4-flash";
 
 export async function fixText(text: string, registry: ModelRegistry, signal?: AbortSignal): Promise<string | null> {
   const [provider, id] = CORRECTOR_MODEL.split("/");
-  const model = provider && id ? registry.find(provider, id) : undefined;
+  const model = registry.find(provider, id);
   if (!model) return null;
   try {
     const response = await registry.streamSimple(model, {
@@ -21,4 +21,4 @@ export async function fixText(text: string, registry: ModelRegistry, signal?: Ab
 }
 
 const CORRECTION_PROMPT = `The text below is corrupted: CJK characters are injected into sentences written in other languages, Latin letters are swapped for Cyrillic look-alikes inside words (e.g. "poль" for "роль"), and grammar may be damaged by these flips. Produce the clean version of the text in its original language.
-Remove all CJK characters that appear inside non-CJK text. Replace flipped letters with the correct letter of the word's script and repair the grammar. Keep the meaning, tone, and Markdown structure. Keep all Latin words, code, file paths, identifiers, numbers, and punctuation exactly as they are. Do not add commentary, code fences, or quotes. If the text has no corruption, return it unchanged.`;
+Replace each injected CJK run with the word or short phrase the sentence intended, in the sentence's language, unless the CJK is obviously deliberate, like a citation or file path. Replace flipped letters with the correct letter of the word's script and repair the grammar. Keep the meaning, tone, and Markdown structure. Keep all Latin words, code, file paths, identifiers, numbers, and punctuation exactly as they are. Do not add commentary, code fences, or quotes. If the text has no corruption, return it unchanged.`;
