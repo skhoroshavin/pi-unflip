@@ -19,6 +19,7 @@ export default function (pi: ExtensionAPI) {
     for (let i = 0; i < content.length; i++) {
       const block = content[i];
       if (block.type !== "text" || !block.text) continue;
+      if (!needsFix(block.text)) continue;
       const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
       if (fixed === null) {
         ctx.ui.notify("Correction failed, keeping original");
