@@ -5,6 +5,7 @@
     "target": "es2022",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true
   },
   "include": ["extensions/**/*.ts"]
