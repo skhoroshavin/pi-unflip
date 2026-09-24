@@ -1,5 +1,5 @@
 export function needsFix(text: string): boolean {
-  return hasCJKFlip(text) || MIXED_WORD.test(text) || (CYRILLIC.test(text) && HOMOGLYPH.test(text));
+  return hasCJKFlip(text) || MIXED_WORD.test(text);
 }
 
 function hasCJKFlip(text: string): boolean {
@@ -20,8 +20,5 @@ const HANZI = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/g;
 const HANGUL = /[\uac00-\ud7af]/g;
 // Latin or Cyrillic letters
 const WESTERN = /[a-z\u0400-\u04ff]/gi;
-const CYRILLIC = /[\u0400-\u04ff]/;
 // A run of Latin+Cyrillic letters containing at least one of each ("poль")
 const MIXED_WORD = /(?=[a-z\u0430-\u044f\u0451]*[\u0430-\u044f\u0451])(?=[a-z\u0430-\u044f\u0451]*[a-z])[a-z\u0430-\u044f\u0451]+/i;
-// Standalone single Latin letter with a Cyrillic look-alike ("переменная x")
-const HOMOGLYPH = /\b[aoecpxyk]\b/i;

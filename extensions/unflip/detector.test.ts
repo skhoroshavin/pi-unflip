@@ -17,8 +17,15 @@ test("fires on Cyrillic homoglyph flips in English prose", () => {
 });
 
 test("fires on corrupted Russian prose", () => {
-  assert.ok(needsFix("Двойной poль в этом сценарии выглядит странно, но poль всё же важна."));
-  assert.ok(needsFix("Она выполнила задачу c первого раза, и отчёт c цифрами приложен."));
+  assert.ok(needsFix("Двойной poль в этом сценaрии выглядит стpaнно, но poль всё же важна."));
+  assert.ok(needsFix("sтвол дерева достаточно толстый."));
+  assert.ok(needsFix("Раcсказ получилсja коротким, но ёмким."));
+});
+
+test("stays quiet on standalone Latin letters in Russian prose", () => {
+  assert.equal(needsFix("Коэффициенты x, y и z подобраны, точка a лежит на кривой."), false);
+  assert.equal(needsFix("Поколения 'X' и \"Z\""), false);
+  assert.equal(needsFix("Координаты (x, y)"), false);
 });
 
 test("stays quiet on clean Russian", () => {
