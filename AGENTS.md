@@ -12,4 +12,4 @@ message_end and rewrites the text blocks via a corrector model. Fail-open everyw
 - Fail-open: any error keeps the original message
 - Rewrite only final assistant messages (stopReason "stop", no toolCall blocks); the message-level skip is the cache-safety guarantee, not the text-only loop
 - Smallest correct code; no speculative config or abstractions
-- No integrity gate on corrector output - rely on prompt and live tests
+- Corrector output must keep every uncorrupted paragraph of its input verbatim; on violation keep the original text (data-loss backstop, fail-open)
