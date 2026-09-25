@@ -77,7 +77,7 @@ async function main(): Promise<void> {
 
     for (let turn = 1; ; turn++) {
       try {
-        await session.prompt(turn === 1 ? `Write two paragraphs in ${values.language}.` : "Another two.");
+        await session.prompt(turn === 1 ? `Write five paragraphs in ${values.language} about a topic of your choice.` : "Continue.");
       } catch (error) {
         emit({ type: "point", turn, contextTokens: session.getContextUsage()?.tokens ?? null, flip: null, error: String(error) });
         break;
