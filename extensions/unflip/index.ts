@@ -9,18 +9,15 @@ export default function (pi: ExtensionAPI) {
     if (message.content.some((b) => b.type === "toolCall")) return;
 
     const content = [...message.content];
-    const targets: { index: number; text: string }[] = [];
-    const paragraphs: string[] = [];
-    for (let i = 0; i < content.length; i++) {
-      const block = content[i];
-      if (block.type !== "text") continue;
-      paragraphs.push(block.text);
-      if (needsFix(block.text)) targets.push({ index: i, text: block.text });
+    const blocks: { index: number; text: string }[] = [];
+    for (const [index, block] of content.entries()) {
+      if (block.type === "text") blocks.push({ index, text: block.text });
     }
+    const targets = blocks.filter((b) => needsFix(b.text));
     if (!targets.length) return;
 
     ctx.ui.notify("Fixing corrupted text...");
-    const context = paragraphs.join("\n\n");
+    const context = blocks.map((b) => b.text).join("\n\n");
     let changed = false;
     for (const { index, text } of targets) {
       const fixed = await fixText(text, context, ctx.modelRegistry, ctx.signal);
