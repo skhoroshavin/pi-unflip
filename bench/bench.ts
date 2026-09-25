@@ -15,7 +15,7 @@ type ThinkingLevel = NonNullable<CreateAgentSessionOptions["thinkingLevel"]>;
 const THINKING: readonly ThinkingLevel[] = ["off", "low", "medium", "high"];
 const USAGE =
   "Usage: node bench/bench.ts --model <provider/id> --language <label> " +
-  "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--text-file <path>]";
+  "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--text-file <path>] [--temperature <value>]";
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -26,6 +26,7 @@ async function main(): Promise<void> {
       thinking: { type: "string", default: "high" },
       "max-turns": { type: "string", default: "100" },
       "text-file": { type: "string" },
+      temperature: { type: "string" },
     },
   });
   if (!values.model || !values.language) throw new Error(USAGE);
@@ -35,6 +36,7 @@ async function main(): Promise<void> {
   const maxTurns = numberArg(values["max-turns"], "--max-turns");
   const textFile = values["text-file"];
   if (textFile) await writeFile(textFile, "");
+  const temperature = values.temperature === undefined ? undefined : Number(values.temperature);
 
   const runtime = await ModelRuntime.create();
 
@@ -44,6 +46,7 @@ async function main(): Promise<void> {
   const id = values.model.slice(slash + 1);
   const model = runtime.getModel(provider, id);
   if (!model) throw new Error(`Model not found: ${values.model}`);
+  if (temperature !== undefined) model.samplingParams = { ...model.samplingParams, temperature };
 
   const { session } = await createAgentSession({
     model,
@@ -65,6 +68,7 @@ async function main(): Promise<void> {
       targetTokens,
       contextWindow: model.contextWindow,
       thinking,
+      temperature,
     });
 
     for (let turn = 1; ; turn++) {
