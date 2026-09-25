@@ -8,28 +8,27 @@ export default function (pi: ExtensionAPI) {
     if (message.role !== "assistant" || message.stopReason !== "stop") return;
     if (message.content.some((b) => b.type === "toolCall")) return;
 
-    const content = [...message.content];
-    const blocks: { index: number; text: string }[] = [];
-    for (const [index, block] of content.entries()) {
-      if (block.type === "text") blocks.push({ index, text: block.text });
-    }
-    const targets = blocks.filter((b) => needsFix(b.text));
-    if (!targets.length) return;
-
-    ctx.ui.notify("Fixing corrupted text...");
-    const context = blocks.map((b) => b.text).join("\n\n");
+    let started = false;
     let changed = false;
-    for (const { index, text } of targets) {
-      const fixed = await fixText(text, context, ctx.modelRegistry, ctx.signal);
+    const content = [...message.content];
+    for (let i = 0; i < content.length; i++) {
+      const block = content[i];
+      if (block.type !== "text" || !needsFix(block.text)) continue;
+      if (!started) {
+        ctx.ui.notify("Fixing corrupted text...");
+        started = true;
+      }
+      const fixed = await fixText(block.text, ctx.modelRegistry, ctx.signal);
       if (fixed === null) {
         ctx.ui.notify("Correction failed, keeping original");
         continue;
       }
-      if (fixed !== text) {
-        content[index] = { type: "text", text: fixed };
+      if (fixed !== block.text) {
+        content[i] = { type: "text", text: fixed };
         changed = true;
       }
     }
+    if (!started) return;
     ctx.ui.notify("Corrupted text fixed");
     if (changed) return { message: { ...message, content } };
   });
