@@ -6,6 +6,7 @@ import {
   SessionManager,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, CreateAgentSessionOptions } from "@earendil-works/pi-coding-agent";
+import { appendFile, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 import { needsFix } from "../extensions/unflip/detector.ts";
 
@@ -14,7 +15,7 @@ type ThinkingLevel = NonNullable<CreateAgentSessionOptions["thinkingLevel"]>;
 const THINKING: readonly ThinkingLevel[] = ["off", "low", "medium", "high"];
 const USAGE =
   "Usage: node bench/bench.ts --model <provider/id> --language <label> " +
-  "[--target-tokens 100000] [--thinking high] [--max-turns 100]";
+  "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--text-file <path>]";
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -24,6 +25,7 @@ async function main(): Promise<void> {
       "target-tokens": { type: "string", default: "100000" },
       thinking: { type: "string", default: "high" },
       "max-turns": { type: "string", default: "100" },
+      "text-file": { type: "string" },
     },
   });
   if (!values.model || !values.language) throw new Error(USAGE);
@@ -31,6 +33,8 @@ async function main(): Promise<void> {
   const thinking = values.thinking as ThinkingLevel;
   const targetTokens = numberArg(values["target-tokens"], "--target-tokens");
   const maxTurns = numberArg(values["max-turns"], "--max-turns");
+  const textFile = values["text-file"];
+  if (textFile) await writeFile(textFile, "");
 
   const runtime = await ModelRuntime.create();
 
@@ -71,7 +75,10 @@ async function main(): Promise<void> {
         break;
       }
       const contextTokens = session.getContextUsage()?.tokens ?? null;
-      emit({ type: "point", turn, contextTokens, flip: flipOf(session) });
+      const blocks = detectorBlocks(session);
+      const flip = blocks?.some(needsFix) ?? false;
+      emit({ type: "point", turn, contextTokens, flip });
+      if (textFile && blocks) await appendFile(textFile, section(turn, contextTokens, flip, blocks));
       if (contextTokens !== null && contextTokens >= targetTokens) break;
       if (turn >= maxTurns) break;
     }
@@ -86,12 +93,17 @@ async function loadResources(): Promise<DefaultResourceLoader> {
   return loader;
 }
 
-/** Same gate as the plugin: final assistant message, stop reason, no tool calls, text blocks only. */
-function flipOf(session: AgentSession): boolean | null {
+/** Same gate as the plugin: final assistant message, stop reason, no tool calls. Returns the text blocks the detector would see. */
+function detectorBlocks(session: AgentSession): string[] | undefined {
   const last = session.messages.at(-1);
-  if (last?.role !== "assistant") return null;
-  if (last.stopReason !== "stop" || last.content.some((b) => b.type === "toolCall")) return null;
-  return last.content.some((b) => b.type === "text" && needsFix(b.text));
+  if (last?.role !== "assistant") return;
+  if (last.stopReason !== "stop" || last.content.some((b) => b.type === "toolCall")) return;
+  return last.content.filter((b) => b.type === "text").map((b) => b.text);
+}
+
+function section(turn: number, contextTokens: number | null, flip: boolean, blocks: string[]): string {
+  const head = `=== turn ${turn} contextTokens=${contextTokens} flip=${flip} ===\n`;
+  return head + blocks.map((text, index) => `--- block ${index} ---\n${text}\n`).join("");
 }
 
 function emit(record: Record<string, unknown>): void {
