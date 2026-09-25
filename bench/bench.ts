@@ -6,7 +6,10 @@ import {
   SessionManager,
 } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, CreateAgentSessionOptions } from "@earendil-works/pi-coding-agent";
-import { appendFile, writeFile } from "node:fs/promises";
+import { mkdtempSync } from "node:fs";
+import { appendFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { needsFix } from "../extensions/unflip/detector.ts";
 
@@ -15,7 +18,7 @@ type ThinkingLevel = NonNullable<CreateAgentSessionOptions["thinkingLevel"]>;
 const THINKING: readonly ThinkingLevel[] = ["off", "low", "medium", "high"];
 const USAGE =
   "Usage: node bench/bench.ts --model <provider/id> --language <label> " +
-  "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--text-file <path>] [--temperature <value>]";
+  "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--temperature <value>]";
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -25,7 +28,6 @@ async function main(): Promise<void> {
       "target-tokens": { type: "string", default: "100000" },
       thinking: { type: "string", default: "high" },
       "max-turns": { type: "string", default: "100" },
-      "text-file": { type: "string" },
       temperature: { type: "string" },
     },
   });
@@ -34,8 +36,9 @@ async function main(): Promise<void> {
   const thinking = values.thinking as ThinkingLevel;
   const targetTokens = numberArg(values["target-tokens"], "--target-tokens");
   const maxTurns = numberArg(values["max-turns"], "--max-turns");
-  const textFile = values["text-file"];
-  if (textFile) await writeFile(textFile, "");
+  // Neutral cwd, so the project's own AGENTS.md stays out of the system prompt. Unique per run, so parallel runs don't collide.
+  const runDir = mkdtempSync(join(tmpdir(), "pi-unflip-bench-"));
+  const textFile = join(runDir, "text.txt");
   const temperature = values.temperature === undefined ? undefined : Number(values.temperature);
 
   const runtime = await ModelRuntime.create();
@@ -55,7 +58,7 @@ async function main(): Promise<void> {
     noTools: "all",
     sessionManager: SessionManager.inMemory(),
     // The plugin under test must not run inside the benchmark and correct the flips we are counting.
-    resourceLoader: await loadResources(),
+    resourceLoader: await loadResources(runDir),
   });
   session.setAutoCompactionEnabled(false);
 
@@ -69,6 +72,7 @@ async function main(): Promise<void> {
       contextWindow: model.contextWindow,
       thinking,
       temperature,
+      textFile,
     });
 
     for (let turn = 1; ; turn++) {
@@ -82,7 +86,7 @@ async function main(): Promise<void> {
       const blocks = detectorBlocks(session);
       const flip = blocks?.some(needsFix) ?? false;
       emit({ type: "point", turn, contextTokens, flip });
-      if (textFile && blocks) await appendFile(textFile, section(turn, contextTokens, flip, blocks));
+      if (blocks) await appendFile(textFile, section(turn, contextTokens, flip, blocks));
       if (contextTokens !== null && contextTokens >= targetTokens) break;
       if (turn >= maxTurns) break;
     }
@@ -91,8 +95,8 @@ async function main(): Promise<void> {
   }
 }
 
-async function loadResources(): Promise<DefaultResourceLoader> {
-  const loader = new DefaultResourceLoader({ cwd: process.cwd(), agentDir: getAgentDir(), noExtensions: true });
+async function loadResources(cwd: string): Promise<DefaultResourceLoader> {
+  const loader = new DefaultResourceLoader({ cwd, agentDir: getAgentDir(), noExtensions: true });
   await loader.reload();
   return loader;
 }
