@@ -79,7 +79,9 @@ async function main(): Promise<void> {
       try {
         await session.prompt(turn === 1 ? `Write five paragraphs in ${values.language} about a topic of your choice.` : "Continue.");
       } catch (error) {
+        process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
         emit({ type: "point", turn, contextTokens: session.getContextUsage()?.tokens ?? null, flip: null, error: String(error) });
+        process.exitCode = 1;
         break;
       }
       const contextTokens = session.getContextUsage()?.tokens ?? null;
