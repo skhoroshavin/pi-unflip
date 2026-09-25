@@ -3,26 +3,18 @@ import { needsFix } from "./detector.ts";
 
 const CORRECTOR_MODEL = "neuralwatt/deepseek-v4-flash";
 
-export async function fixText(
-  target: string,
-  context: string,
-  registry: ModelRegistry,
-  signal?: AbortSignal,
-): Promise<string | null> {
+export async function fixText(text: string, registry: ModelRegistry, signal?: AbortSignal): Promise<string | null> {
   const [provider, id] = CORRECTOR_MODEL.split("/");
   const model = registry.find(provider, id);
   if (!model) return null;
-  const request =
-    (context === target ? "" : `Full reply for context:\n\n${context}\n\n`) +
-    `Fragment to repair:\n\n<<<${target}>>>`;
   try {
     const response = await registry.streamSimple(model, {
       systemPrompt: CORRECTION_PROMPT,
-      messages: [{ role: "user", content: [{ type: "text", text: request }], timestamp: Date.now() }],
+      messages: [{ role: "user", content: [{ type: "text", text: `Fragment to repair:\n\n<<<${text}>>>` }], timestamp: Date.now() }],
     }, { signal, temperature: 0, samplingParams: { reasoning_effort: "none" } }).result();
     if (response.stopReason !== "stop" || signal?.aborted) return null;
     const fixed = response.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
-    if (!fixed || !preservesCleanParagraphs(target, fixed)) return null;
+    if (!fixed || !preservesCleanParagraphs(text, fixed)) return null;
     return fixed;
   } catch {
     return null;
