@@ -5,11 +5,14 @@ export function needsFix(text: string): boolean {
 function hasCJKFlip(text: string): boolean {
   // Japanese: hanzi are part of the language
   if (text.match(KANA)) return false;
-  const hanzi = text.match(HANZI)?.length ?? 0;
-  if (hanzi === 0) return false;
-  // Hanzi are pollution only when they don't carry the text - Chinese answers are hanzi-majority
-  const nonHanzi = (text.match(WESTERN)?.length ?? 0) + (text.match(HANGUL)?.length ?? 0);
-  return hanzi < nonHanzi;
+  // Deliberate Chinese comes as hanzi-majority paragraphs; stray flips ride western ones
+  for (const paragraph of text.split(/\n+/)) {
+    const hanzi = paragraph.match(HANZI)?.length ?? 0;
+    if (hanzi === 0) continue;
+    const nonHanzi = (paragraph.match(WESTERN)?.length ?? 0) + (paragraph.match(HANGUL)?.length ?? 0);
+    if (hanzi < nonHanzi) return true;
+  }
+  return false;
 }
 
 // Hiragana + katakana

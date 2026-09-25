@@ -44,6 +44,12 @@ test("fires on hanzi flips in Korean text", () => {
   assert.ok(needsFix("마이그레이션이 완료되었고 报告 인덱스가 다시 생성되었습니다."));
 });
 
+test("stays quiet on English answers containing a deliberate Chinese paragraph", () => {
+  assert.equal(needsFix(
+    "Sure, here is the Chinese translation of the deployment notes:\n\n服务的迁移工作已经完成，相关的配置文件也更新到最新版本。请重启所有节点以确保新设置生效。\n\nLet me know if you want me to adjust the tone."
+  ), false);
+});
+
 test("stays quiet on Chinese and Korean responses with occasional English words and numbers", () => {
   assert.equal(needsFix("迁移完成，升级到 node v22 后重试，耗时 3 分钟。"), false);
   assert.equal(needsFix("마이그레이션 완료, npm run build도 성공했습니다, 약 3분 걸렸습니다."), false);
