@@ -116,13 +116,14 @@ function render(
   yMax: number,
   title: string,
 ): string {
-  const width = 900;
   const height = 620;
   const left = 80;
-  const right = 300;
+  const plotW = 560;
+  // Legend column sized to the longest label, so long model ids are not clipped.
+  const right = 40 + Math.round(Math.max(...slots.map((slot) => slot.label.length)) * 6.6);
+  const width = left + plotW + right;
   const top = 50;
   const bottom = 60;
-  const plotW = width - left - right;
   const plotH = height - top - bottom;
   const sx = (x: number) => left + (x / xMax) * plotW;
   const sy = (y: number) => top + plotH - (y / yMax) * plotH;
@@ -151,7 +152,6 @@ function render(
     parts.push(`<line x1="${left + plotW + 30}" y1="${y}" x2="${left + plotW + 50}" y2="${y}" stroke="${color}" stroke-width="2.5" stroke-dasharray="${dash}"/>`);
     parts.push(`<text x="${left + plotW + 56}" y="${y + 4}" font-size="12">${escape(slot.label)}</text>`);
   });
-  parts.push(`<text x="${left + plotW / 2}" y="${height - 34}" font-size="11" text-anchor="middle" fill="#777">bold: mean over runs, faint: individual runs, grid ${STEP} tokens</text>`);
   parts.push("</svg>");
   return parts.join("\n");
 }
