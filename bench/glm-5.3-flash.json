@@ -1,0 +1,10 @@
+{
+  "targetTokens": 50000,
+  "models": [
+    { "model": "zai/glm-5.3-flash" },
+    { "model": "synthetic/hf:zai-org/GLM-5.3-Flash" },
+    { "model": "neuralwatt/glm-5.3-flash" },
+    { "model": "neuralwatt/glm-5.3-flash", "temperature": 0.9 }
+  ],
+  "languages": ["English", "Russian"]
+}

@@ -1,0 +1,12 @@
+{"type":"run","model":"zai/glm-5.3","provider":"zai","language":"English","targetTokens":50000,"contextWindow":1000000,"thinking":"high","textFile":"/var/folders/8m/vm250k3x5897cs2cqlwd_v8m0000gn/T/pi-unflip-bench-ziXGZ9/text.txt"}
+{"type":"point","turn":1,"contextTokens":1157,"flip":false}
+{"type":"point","turn":2,"contextTokens":2051,"flip":false}
+{"type":"point","turn":3,"contextTokens":4749,"flip":false}
+{"type":"point","turn":4,"contextTokens":6731,"flip":false}
+{"type":"point","turn":5,"contextTokens":9904,"flip":false}
+{"type":"point","turn":6,"contextTokens":17918,"flip":false}
+{"type":"point","turn":7,"contextTokens":25907,"flip":false}
+{"type":"point","turn":8,"contextTokens":31541,"flip":false}
+{"type":"point","turn":9,"contextTokens":38752,"flip":false}
+{"type":"point","turn":10,"contextTokens":45626,"flip":false}
+{"type":"point","turn":11,"contextTokens":54034,"flip":false}

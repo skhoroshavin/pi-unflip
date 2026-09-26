@@ -1,0 +1,8 @@
+{
+  "targetTokens": 50000,
+  "models": [
+    { "model": "neuralwatt/glm-5.3-flash" },
+    { "model": "neuralwatt/glm-5.3-flex" }
+  ],
+  "languages": ["English", "Russian"]
+}
