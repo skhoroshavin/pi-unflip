@@ -1,13 +1,8 @@
 {
   "targetTokens": 50000,
   "models": [
-    { "model": "neuralwatt/deepseek-v4.1-flash" },
-    { "model": "neuralwatt/kimi-k3-flex" },
-    { "model": "neuralwatt/glm-5.3-flex" },
-    { "model": "neuralwatt/glm-5.3-flex", "temperature": 0.9 },
-    { "model": "synthetic/hf:moonshotai/Kimi-K3" },
-    { "model": "synthetic/hf:deepseek-ai/DeepSeek-V4.1-Flash" },
-    { "model": "zai/glm-5.3" }
+    { "model": "neuralwatt/glm-5.3-flash" },
+    { "model": "neuralwatt/glm-5.3-flex" }
   ],
   "languages": ["English", "Russian"]
 }
