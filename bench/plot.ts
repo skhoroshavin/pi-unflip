@@ -2,7 +2,15 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, extname, join } from "node:path";
 
 const STEP = 2500;
-const COLORS = ["#1f77b4", "#d62728", "#2ca02c", "#ff7f0e", "#9467bd", "#8c564b", "#e377c2", "#17becf"];
+const COLORS = { nwDefault: "#d62728", nwLowTemp: "#ff7f0e", synthetic: "#1f77b4", direct: "#2ca02c", other: "#9467bd" };
+
+function colorFor(model: string, temperature: number | undefined): string {
+  const provider = model.split("/")[0];
+  if (provider === "neuralwatt") return temperature === undefined ? COLORS.nwDefault : COLORS.nwLowTemp;
+  if (provider === "synthetic") return COLORS.synthetic;
+  if (provider === "zai" || provider === "kimi-coding") return COLORS.direct;
+  return COLORS.other;
+}
 
 interface RunHeader {
   type: string;
@@ -26,7 +34,7 @@ function main(): void {
   const languages = filterArg(args, "--language");
   const resultsDir = join(dirname(configPath), "results", basename(configPath, extname(configPath)));
 
-  const slots = new Map<string, { label: string; runs: Series[] }>();
+  const slots = new Map<string, { label: string; model: string; temperature?: number; language: string; runs: Series[] }>();
   for (const file of readdirSync(resultsDir)) {
     if (!file.endsWith(".jsonl")) continue;
     const run = loadRun(join(resultsDir, file));
@@ -35,11 +43,13 @@ function main(): void {
     if (models.length && !matches(model, models)) continue;
     if (languages.length && !matches(language, languages)) continue;
     const label = `${model}${temperature === undefined ? "" : ` t${temperature}`} ${language}`;
-    const slot = slots.get(label) ?? { label, runs: [] };
+    const slot = slots.get(label) ?? { label, model, temperature, language, runs: [] };
     slot.runs.push(cumulative(run.points));
     slots.set(label, slot);
   }
   if (!slots.size) throw new Error(`No runs matched in ${resultsDir}`);
+  // A dash pattern per language, so both dimensions read off one chart.
+  const languageNames = [...new Set([...slots.values()].map((slot) => slot.language))].sort();
 
   const grid: number[] = [];
   const xMax = Math.max(...[...slots.values()].flatMap((slot) => slot.runs.map((run) => run.at(-1)?.x ?? 0)));
@@ -58,7 +68,10 @@ function main(): void {
   }
 
   const title = `accumulated problematic turns vs generated tokens${models.length ? `, models ${models.join("|")}` : ""}${languages.length ? `, languages ${languages.join("|")}` : ""}`;
-  writeFileSync(`${resultsDir}.svg`, render([...slots.values()].map((slot) => ({ ...slot, mean: means.get(slot.label)! })), grid, xMax, yMax, title));
+  writeFileSync(
+    `${resultsDir}.svg`,
+    render([...slots.values()].map((slot) => ({ ...slot, mean: means.get(slot.label)! })), languageNames, xMax, yMax, title),
+  );
   console.log(`\n${resultsDir}.svg`);
 }
 
@@ -96,7 +109,13 @@ function loadRun(path: string): { header: RunHeader; points: Point[] } | undefin
   return { header, points: lines.slice(1) as Point[] };
 }
 
-function render(slots: { label: string; runs: Series[]; mean: Series }[], grid: number[], xMax: number, yMax: number, title: string): string {
+function render(
+  slots: { label: string; model: string; temperature?: number; language: string; runs: Series[]; mean: Series }[],
+  languageNames: string[],
+  xMax: number,
+  yMax: number,
+  title: string,
+): string {
   const width = 900;
   const height = 620;
   const left = 80;
@@ -124,22 +143,23 @@ function render(slots: { label: string; runs: Series[]; mean: Series }[], grid: 
   parts.push(`<text x="20" y="${top + plotH / 2}" font-size="13" text-anchor="middle" transform="rotate(-90 20 ${top + plotH / 2})">accumulated problematic turns</text>`);
 
   slots.forEach((slot, index) => {
-    const color = COLORS[index % COLORS.length];
-    for (const run of slot.runs) parts.push(path(run, sx, sy, color, 0.25, 1));
-    parts.push(path(slot.mean, sx, sy, color, 1, 2.5));
+    const color = colorFor(slot.model, slot.temperature);
+    const dash = languageNames.indexOf(slot.language) === 0 ? "" : languageNames.indexOf(slot.language) === 1 ? "7 5" : "2 4";
+    for (const run of slot.runs) parts.push(path(run, sx, sy, color, 0.25, 1, dash));
+    parts.push(path(slot.mean, sx, sy, color, 1, 2.5, dash));
     const y = top + 20 + index * 22;
-    parts.push(`<line x1="${left + plotW + 30}" y1="${y}" x2="${left + plotW + 50}" y2="${y}" stroke="${color}" stroke-width="2.5"/>`);
+    parts.push(`<line x1="${left + plotW + 30}" y1="${y}" x2="${left + plotW + 50}" y2="${y}" stroke="${color}" stroke-width="2.5" stroke-dasharray="${dash}"/>`);
     parts.push(`<text x="${left + plotW + 56}" y="${y + 4}" font-size="12">${escape(slot.label)}</text>`);
   });
-  parts.push(`<text x="${left + plotW / 2}" y="${height - 34}" font-size="11" text-anchor="middle" fill="#777">bold: mean over runs, faint: individual runs, grid ${grid.length} bins of ${STEP} tokens</text>`);
+  parts.push(`<text x="${left + plotW / 2}" y="${height - 34}" font-size="11" text-anchor="middle" fill="#777">bold: mean over runs, faint: individual runs, grid ${STEP} tokens</text>`);
   parts.push("</svg>");
   return parts.join("\n");
 }
 
-function path(points: Series, sx: (x: number) => number, sy: (y: number) => number, color: string, opacity: number, width: number): string {
+function path(points: Series, sx: (x: number) => number, sy: (y: number) => number, color: string, opacity: number, width: number, dash: string): string {
   if (points.length < 2) return "";
   const d = points.map((point, index) => `${index ? "L" : "M"}${sx(point.x).toFixed(1)} ${sy(point.y).toFixed(1)}`).join(" ");
-  return `<path d="${d}" fill="none" stroke="${color}" stroke-opacity="${opacity}" stroke-width="${width}"/>`;
+  return `<path d="${d}" fill="none" stroke="${color}" stroke-opacity="${opacity}" stroke-width="${width}" stroke-dasharray="${dash}"/>`;
 }
 
 function niceStep(range: number, target = 6): number {
