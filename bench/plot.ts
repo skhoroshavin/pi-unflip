@@ -56,7 +56,17 @@ function main(): void {
   for (let x = STEP; x <= xMax; x += STEP) grid.push(x);
 
   const means = new Map<string, Series>();
-  for (const [label, slot] of slots) means.set(label, grid.map((x) => ({ x, y: meanAt(slot.runs, x) })).filter(({ y }) => y !== null) as Series);
+  for (const [label, slot] of slots) {
+    // Averaged only while every run of the slot is still alive, so the mean can never drop when a shorter run ends.
+    const limit = Math.min(...slot.runs.map((run) => run.at(-1)?.x ?? 0));
+    means.set(
+      label,
+      grid
+        .filter((x) => x <= limit)
+        .map((x) => ({ x, y: meanAt(slot.runs, x) }))
+        .filter((point): point is { x: number; y: number } => point.y !== null),
+    );
+  }
   // Scale to the tallest cumulative run, so the faint individual lines stay inside the axes.
   const yMax = Math.max(1, Math.ceil(Math.max(...[...slots.values()].flatMap((slot) => slot.runs.map((run) => run.at(-1)?.y ?? 0)))));
 
