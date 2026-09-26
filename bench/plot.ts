@@ -68,11 +68,13 @@ function main(): void {
   }
 
   const title = `accumulated problematic turns vs generated tokens${models.length ? `, models ${models.join("|")}` : ""}${languages.length ? `, languages ${languages.join("|")}` : ""}`;
+  const suffix = [...models, ...languages].join("-").replace(/[/\s]+/g, "_") || "all";
+  const out = `${resultsDir}-${suffix}.svg`;
   writeFileSync(
-    `${resultsDir}.svg`,
+    out,
     render([...slots.values()].map((slot) => ({ ...slot, mean: means.get(slot.label)! })), languageNames, xMax, yMax, title),
   );
-  console.log(`\n${resultsDir}.svg`);
+  console.log(`\n${out}`);
 }
 
 /** Value of a run's step function at x: the cumulative flip count of the last point at or before x, 0 before the first point. */
@@ -175,7 +177,10 @@ function filterArg(args: string[], flag: string): string[] {
   return values;
 }
 
-const matches = (value: string, filters: string[]) => filters.some((filter) => value.includes(filter));
+const matches = (value: string, filters: string[]) => {
+  const lower = value.toLowerCase();
+  return filters.some((filter) => lower.includes(filter.toLowerCase()));
+};
 const escape = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 main();
