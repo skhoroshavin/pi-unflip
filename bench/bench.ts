@@ -86,9 +86,18 @@ async function main(): Promise<void> {
       }
       const contextTokens = session.getContextUsage()?.tokens ?? null;
       const blocks = detectorBlocks(session);
-      const flip = blocks?.some(needsFix) ?? false;
+      if (!blocks) {
+        // Not a plain stopped assistant message: the provider failed or was cut off, so the run is not valid data.
+        const last = session.messages.at(-1);
+        const stopReason = last?.role === "assistant" ? last.stopReason : last?.role;
+        emit({ type: "point", turn, contextTokens, flip: null, stopReason });
+        process.stderr.write(`turn ${turn}: unexpected finish (${stopReason}), aborting run\n`);
+        process.exitCode = 1;
+        break;
+      }
+      const flip = blocks.some(needsFix);
       emit({ type: "point", turn, contextTokens, flip });
-      if (blocks) await appendFile(textFile, section(turn, contextTokens, flip, blocks));
+      await appendFile(textFile, section(turn, contextTokens, flip, blocks));
       if (contextTokens !== null && contextTokens >= targetTokens) break;
       if (turn >= maxTurns) break;
     }
