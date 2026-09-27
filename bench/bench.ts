@@ -15,7 +15,6 @@ import { needsFix } from "../extensions/unflip/detector.ts";
 
 type ThinkingLevel = NonNullable<CreateAgentSessionOptions["thinkingLevel"]>;
 
-const THINKING: readonly ThinkingLevel[] = ["off", "low", "medium", "high"];
 const USAGE =
   "Usage: node bench/bench.ts --model <provider/id> --language <label> " +
   "[--target-tokens 100000] [--thinking high] [--max-turns 100] [--temperature <value>]";
@@ -32,10 +31,9 @@ async function main(): Promise<void> {
     },
   });
   if (!values.model || !values.language) throw new Error(USAGE);
-  if (!THINKING.includes(values.thinking as ThinkingLevel)) throw new Error(`Unknown thinking level: ${values.thinking}\n${USAGE}`);
   const thinking = values.thinking as ThinkingLevel;
-  const targetTokens = numberArg(values["target-tokens"], "--target-tokens");
-  const maxTurns = numberArg(values["max-turns"], "--max-turns");
+  const targetTokens = Number(values["target-tokens"]);
+  const maxTurns = Number(values["max-turns"]);
   // Neutral cwd, so the project's own AGENTS.md stays out of the system prompt. Unique per run, so parallel runs don't collide.
   const runDir = mkdtempSync(join(tmpdir(), "pi-unflip-bench-"));
   const textFile = join(runDir, "text.txt");
@@ -43,14 +41,13 @@ async function main(): Promise<void> {
 
   const runtime = await ModelRuntime.create();
 
-  const slash = values.model.indexOf("/");
-  if (slash < 1) throw new Error(`Expected model as provider/id: ${values.model}`);
-  const provider = values.model.slice(0, slash);
-  const id = values.model.slice(slash + 1);
+  const [provider, id] = values.model.split("/");
   const model = runtime.getModel(provider, id);
   if (!model) throw new Error(`Model not found: ${values.model}`);
   if (temperature !== undefined) model.samplingParams = { ...model.samplingParams, temperature };
 
+  const resourceLoader = new DefaultResourceLoader({ cwd: runDir, agentDir: getAgentDir(), noExtensions: true });
+  await resourceLoader.reload();
   const { session } = await createAgentSession({
     model,
     modelRuntime: runtime,
@@ -58,7 +55,7 @@ async function main(): Promise<void> {
     noTools: "all",
     sessionManager: SessionManager.inMemory(),
     // The plugin under test must not run inside the benchmark and correct the flips we are counting.
-    resourceLoader: await loadResources(runDir),
+    resourceLoader,
   });
   session.setAutoCompactionEnabled(false);
 
@@ -106,12 +103,6 @@ async function main(): Promise<void> {
   }
 }
 
-async function loadResources(cwd: string): Promise<DefaultResourceLoader> {
-  const loader = new DefaultResourceLoader({ cwd, agentDir: getAgentDir(), noExtensions: true });
-  await loader.reload();
-  return loader;
-}
-
 /** Same gate as the plugin: final assistant message, stop reason, no tool calls. Returns the text blocks the detector would see. */
 function detectorBlocks(session: AgentSession): string[] | undefined {
   const last = session.messages.at(-1);
@@ -127,12 +118,6 @@ function section(turn: number, contextTokens: number | null, flip: boolean, bloc
 
 function emit(record: Record<string, unknown>): void {
   process.stdout.write(`${JSON.stringify(record)}\n`);
-}
-
-function numberArg(raw: string | undefined, flag: string): number {
-  const value = Number(raw);
-  if (!Number.isInteger(value) || value < 1) throw new Error(`Invalid ${flag}: ${raw}`);
-  return value;
 }
 
 main().catch((error) => {

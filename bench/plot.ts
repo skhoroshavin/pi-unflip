@@ -46,7 +46,7 @@ function main(): void {
   const languageNames = [...new Set([...slots.values()].map((slot) => slot.language))].sort();
 
   const grid: number[] = [];
-  const xMax = Math.max(...[...slots.values()].flatMap((slot) => slot.runs.map((run) => run.at(-1)?.x ?? 0)));
+  const xMax = Math.max(1, ...[...slots.values()].flatMap((slot) => slot.runs.map((run) => run.at(-1)?.x ?? 0)));
   for (let x = STEP; x <= xMax; x += STEP) grid.push(x);
 
   const means = new Map<string, Series>();
@@ -55,10 +55,7 @@ function main(): void {
     const limit = Math.min(...slot.runs.map((run) => run.at(-1)?.x ?? 0));
     means.set(
       label,
-      grid
-        .filter((x) => x <= limit)
-        .map((x) => ({ x, y: meanAt(slot.runs, x) }))
-        .filter((point): point is { x: number; y: number } => point.y !== null),
+      grid.filter((x) => x <= limit).map((x) => ({ x, y: meanAt(slot.runs, x) })),
     );
   }
   // Scale to the tallest cumulative run, so the faint individual lines stay inside the axes.
@@ -91,9 +88,9 @@ function valueAt(run: Series, x: number): number | undefined {
   return value;
 }
 
-function meanAt(runs: Series[], x: number): number | null {
-  const values = runs.map((run) => valueAt(run, x)).filter((value) => value !== undefined);
-  return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+function meanAt(runs: Series[], x: number): number {
+  // Callers only ask at x <= the shortest run's end, so every run is alive here.
+  return runs.reduce((sum, run) => sum + valueAt(run, x)!, 0) / runs.length;
 }
 
 function cumulative(points: Point[]): Series {

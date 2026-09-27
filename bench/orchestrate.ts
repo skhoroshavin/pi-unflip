@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { createWriteStream, existsSync, mkdirSync } from "node:fs";
+import { createWriteStream, existsSync } from "node:fs";
 import { readFile, rename, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { pipeline } from "node:stream/promises";
@@ -26,8 +26,6 @@ async function main(): Promise<void> {
   );
   const duplicate = combos.map(({ label }) => label).find((label, index, labels) => labels.indexOf(label) !== index);
   if (duplicate) throw new Error(`Combinations share the label ${duplicate}`);
-  // Results live next to the config that produced them, so the directory is self-contained.
-  mkdirSync(outDir, { recursive: true });
   const rounds = config.rounds ?? DEFAULT_ROUNDS;
   const total = combos.length * rounds;
   let index = 0;
