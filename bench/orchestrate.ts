@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { createWriteStream, existsSync, mkdirSync } from "node:fs";
 import { readFile, rename, unlink } from "node:fs/promises";
-import { basename, dirname, extname, join } from "node:path";
+import { join } from "node:path";
 import { pipeline } from "node:stream/promises";
 
 const DEFAULT_ROUNDS = 3;
@@ -17,17 +17,16 @@ interface Config {
 }
 
 async function main(): Promise<void> {
-  const [configPath, ...rest] = process.argv.slice(2);
-  if (!configPath || rest.length) throw new Error("Usage: node bench/orchestrate.ts <config.json>");
-  const config: Config = JSON.parse(await readFile(configPath, "utf8"));
+  const [outDir, ...rest] = process.argv.slice(2);
+  if (!outDir || rest.length) throw new Error("Usage: node bench/orchestrate.ts <experiment-dir>");
+  const config: Config = JSON.parse(await readFile(join(outDir, "config.json"), "utf8"));
   if (!config.models?.length || !config.languages?.length) throw new Error("config needs non-empty models and languages");
   const combos = config.models.flatMap(({ model, temperature }) =>
     config.languages.map((language) => ({ model, temperature, language, label: comboLabel(model, temperature, language) })),
   );
   const duplicate = combos.map(({ label }) => label).find((label, index, labels) => labels.indexOf(label) !== index);
   if (duplicate) throw new Error(`Combinations share the label ${duplicate}`);
-  // Results live next to the config under its own name, so rerunning the same config resumes instead of restarting.
-  const outDir = join(dirname(configPath), "results", basename(configPath, extname(configPath)));
+  // Results live next to the config that produced them, so the directory is self-contained.
   mkdirSync(outDir, { recursive: true });
   const rounds = config.rounds ?? DEFAULT_ROUNDS;
   const total = combos.length * rounds;

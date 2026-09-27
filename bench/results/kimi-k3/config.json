@@ -1,0 +1,9 @@
+{
+  "targetTokens": 50000,
+  "models": [
+    { "model": "neuralwatt/kimi-k3-flex" },
+    { "model": "synthetic/hf:moonshotai/Kimi-K3" },
+    { "model": "kimi-coding/k3-256k" }
+  ],
+  "languages": ["English", "Russian"]
+}

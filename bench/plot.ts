@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, dirname, extname, join } from "node:path";
+import { join } from "node:path";
 
 const STEP = 2500;
 const COLORS = { nwDefault: "#d62728", nwLowTemp: "#ff7f0e", synthetic: "#1f77b4", direct: "#2ca02c", other: "#9467bd" };
@@ -27,9 +27,8 @@ interface Point {
 type Series = { x: number; y: number }[];
 
 function main(): void {
-  const [configPath, ...rest] = process.argv.slice(2);
-  if (!configPath || rest.length) throw new Error("Usage: node bench/plot.ts <config.json>");
-  const resultsDir = join(dirname(configPath), "results", basename(configPath, extname(configPath)));
+  const [resultsDir, ...rest] = process.argv.slice(2);
+  if (!resultsDir || rest.length) throw new Error("Usage: node bench/plot.ts <experiment-dir>");
 
   const slots = new Map<string, { label: string; model: string; temperature?: number; language: string; runs: Series[] }>();
   for (const file of readdirSync(resultsDir)) {
