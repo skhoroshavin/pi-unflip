@@ -27,11 +27,8 @@ interface Point {
 type Series = { x: number; y: number }[];
 
 function main(): void {
-  const args = process.argv.slice(2);
-  const configPath = args.find((arg) => !arg.startsWith("--"));
-  if (!configPath) throw new Error("Usage: node bench/plot.ts <config.json> [--model <substr,...>] [--language <substr,...>]");
-  const models = filterArg(args, "--model");
-  const languages = filterArg(args, "--language");
+  const [configPath, ...rest] = process.argv.slice(2);
+  if (!configPath || rest.length) throw new Error("Usage: node bench/plot.ts <config.json>");
   const resultsDir = join(dirname(configPath), "results", basename(configPath, extname(configPath)));
 
   const slots = new Map<string, { label: string; model: string; temperature?: number; language: string; runs: Series[] }>();
@@ -40,8 +37,6 @@ function main(): void {
     const run = loadRun(join(resultsDir, file));
     if (!run) continue;
     const { model, language, temperature } = run.header;
-    if (models.length && !matches(model, models)) continue;
-    if (languages.length && !matches(language, languages)) continue;
     const label = `${model}${temperature === undefined ? "" : ` t${temperature}`} ${language}`;
     const slot = slots.get(label) ?? { label, model, temperature, language, runs: [] };
     slot.runs.push(cumulative(run.points));
@@ -77,9 +72,8 @@ function main(): void {
     console.log(`${slot.label}: ${slot.runs.length} runs, ${turns} turns, ${flips} flips, ${(flips / (tokens / 1000)).toFixed(2)} flips/1k tokens`);
   }
 
-  const title = `accumulated problematic turns vs generated tokens${models.length ? `, models ${models.join("|")}` : ""}${languages.length ? `, languages ${languages.join("|")}` : ""}`;
-  const suffix = [...models, ...languages].join("-").replace(/[/\s]+/g, "_") || "all";
-  const out = `${resultsDir}-${suffix}.svg`;
+  const title = "accumulated problematic turns vs generated tokens";
+  const out = `${resultsDir}.svg`;
   writeFileSync(
     out,
     render([...slots.values()].map((slot) => ({ ...slot, mean: means.get(slot.label)! })), languageNames, xMax, yMax, title),
@@ -179,18 +173,6 @@ function niceStep(range: number, target = 6): number {
   return [1, 2, 5, 10].find((multiple) => multiple * magnitude >= range / target)! * magnitude;
 }
 
-function filterArg(args: string[], flag: string): string[] {
-  const values: string[] = [];
-  for (const [index, arg] of args.entries()) {
-    if (arg === flag && args[index + 1]) values.push(...args[index + 1].split(","));
-  }
-  return values;
-}
-
-const matches = (value: string, filters: string[]) => {
-  const lower = value.toLowerCase();
-  return filters.some((filter) => lower.includes(filter.toLowerCase()));
-};
 const escape = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 main();
