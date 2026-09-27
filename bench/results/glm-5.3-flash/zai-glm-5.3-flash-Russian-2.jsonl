@@ -1,0 +1,14 @@
+{"type":"run","model":"zai/glm-5.3-flash","provider":"zai","language":"Russian","targetTokens":50000,"contextWindow":1000000,"thinking":"high","textFile":"/var/folders/8m/vm250k3x5897cs2cqlwd_v8m0000gn/T/pi-unflip-bench-yQ9fFX/text.txt"}
+{"type":"point","turn":1,"contextTokens":1472,"flip":false}
+{"type":"point","turn":2,"contextTokens":2285,"flip":false}
+{"type":"point","turn":3,"contextTokens":3282,"flip":false}
+{"type":"point","turn":4,"contextTokens":5339,"flip":true}
+{"type":"point","turn":5,"contextTokens":7161,"flip":true}
+{"type":"point","turn":6,"contextTokens":11642,"flip":false}
+{"type":"point","turn":7,"contextTokens":14520,"flip":true}
+{"type":"point","turn":8,"contextTokens":17672,"flip":true}
+{"type":"point","turn":9,"contextTokens":24752,"flip":false}
+{"type":"point","turn":10,"contextTokens":30165,"flip":false}
+{"type":"point","turn":11,"contextTokens":36098,"flip":false}
+{"type":"point","turn":12,"contextTokens":43207,"flip":true}
+{"type":"point","turn":13,"contextTokens":51724,"flip":true}
