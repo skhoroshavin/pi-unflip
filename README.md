@@ -10,6 +10,10 @@ pi install npm:pi-unflip
 
 > So far works only with the NeuralWatt provider (`~/.pi/agent/models.json` entry + `NEURALWATT_API_KEY`); without it, corrupted messages keep the original and warn.
 
+## Benchmark
+
+The repo also includes a benchmark for corruption rates: [bench](./bench). Results for several models and providers are checked in there.
+
 ## License
 
 MIT. See [LICENSE](./LICENSE).
