@@ -1,8 +1,0 @@
-{
-  "targetTokens": 50000,
-  "models": [
-    { "model": "neuralwatt/deepseek-v4.1-flash" },
-    { "model": "synthetic/hf:deepseek-ai/DeepSeek-V4.1-Flash" }
-  ],
-  "languages": ["English", "Russian"]
-}
