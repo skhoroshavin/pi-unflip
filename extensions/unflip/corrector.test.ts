@@ -11,6 +11,7 @@ test("gate: uncorrupted paragraphs must survive verbatim", () => {
   assert.equal(preservesCleanParagraphs(target, "The cache report is warm."), false);
 });
 
+// Live tests against the real corrector model; skipped without credentials
 const skip = !process.env.NEURALWATT_API_KEY;
 
 test("fixes CJK glued into English prose", { skip }, async () => {
@@ -55,7 +56,7 @@ function registry(): Promise<ModelRegistry> {
 }
 
 async function fixAndCheck(sample: string): Promise<string> {
-  const fixed = await fixText(sample, sample, await registry());
+  const fixed = await fixText(sample, await registry());
   assert.ok(fixed, `no fix for: ${sample}`);
   assert.ok(!needsFix(fixed), `still corrupted: ${fixed}`);
   console.log(fixed);
