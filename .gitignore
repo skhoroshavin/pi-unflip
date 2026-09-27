@@ -1,3 +1,2 @@
 node_modules
-bench/results/
-bench/archive/results/
+*.part

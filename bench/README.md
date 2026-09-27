@@ -25,7 +25,7 @@ A config lists the models (each with an optional `temperature`) and the language
 }
 ```
 
-Rerunning the same command resumes: finished combinations are skipped. A run that fails, meaning a provider error or a turn that does not finish normally, is discarded and stops the batch. The generated text stays in the temp directory of its own run; the config and the JSONL are what get committed.
+Rerunning the same command resumes: finished combinations are skipped. A run that fails, meaning a provider error or a turn that does not finish normally, is discarded and stops the batch. The generated text stays in the temp directory of its own run; the config, the JSONL and the rendered chart are what get committed.
 
 ## Results layout
 

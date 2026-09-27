@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="885" height="620" viewBox="0 0 885 620" font-family="sans-serif">
+<rect width="885" height="620" fill="white"/>
+<text x="80" y="28" font-size="15">accumulated problematic turns vs generated tokens</text>
+<line x1="80" y1="560" x2="640" y2="560" stroke="#e5e5e5"/>
+<text x="72" y="564" font-size="12" text-anchor="end">0</text>
+<line x1="80" y1="363.8461538461538" x2="640" y2="363.8461538461538" stroke="#e5e5e5"/>
+<text x="72" y="367.8461538461538" font-size="12" text-anchor="end">5</text>
+<line x1="80" y1="167.69230769230768" x2="640" y2="167.69230769230768" stroke="#e5e5e5"/>
+<text x="72" y="171.69230769230768" font-size="12" text-anchor="end">10</text>
+<line x1="80" y1="50" x2="80" y2="560" stroke="#e5e5e5"/>
+<text x="80" y="580" font-size="12" text-anchor="middle">0k</text>
+<line x1="176.9025783007441" y1="50" x2="176.9025783007441" y2="560" stroke="#e5e5e5"/>
+<text x="176.9025783007441" y="580" font-size="12" text-anchor="middle">10k</text>
+<line x1="273.8051566014882" y1="50" x2="273.8051566014882" y2="560" stroke="#e5e5e5"/>
+<text x="273.8051566014882" y="580" font-size="12" text-anchor="middle">20k</text>
+<line x1="370.70773490223223" y1="50" x2="370.70773490223223" y2="560" stroke="#e5e5e5"/>
+<text x="370.70773490223223" y="580" font-size="12" text-anchor="middle">30k</text>
+<line x1="467.61031320297633" y1="50" x2="467.61031320297633" y2="560" stroke="#e5e5e5"/>
+<text x="467.61031320297633" y="580" font-size="12" text-anchor="middle">40k</text>
+<line x1="564.5128915037203" y1="50" x2="564.5128915037203" y2="560" stroke="#e5e5e5"/>
+<text x="564.5128915037203" y="580" font-size="12" text-anchor="middle">50k</text>
+<text x="360" y="608" font-size="13" text-anchor="middle">generated tokens</text>
+<text x="20" y="305" font-size="13" text-anchor="middle" transform="rotate(-90 20 305)">accumulated problematic turns</text>
+<path d="M90.8 560.0 L99.4 560.0 L108.4 560.0 L120.0 560.0 L130.8 560.0 L142.9 560.0 L153.9 560.0 L165.1 560.0 L177.5 560.0 L192.4 560.0 L210.1 560.0 L230.2 560.0 L250.6 560.0 L267.4 560.0 L287.2 560.0 L306.3 560.0 L336.2 560.0 L368.4 560.0 L386.7 560.0 L432.3 560.0 L466.1 560.0 L506.7 560.0 L556.1 560.0 L582.9 560.0" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M89.3 560.0 L96.1 560.0 L103.1 560.0 L111.4 560.0 L121.2 560.0 L130.4 560.0 L140.7 560.0 L150.7 560.0 L160.9 560.0 L172.0 560.0 L183.1 560.0 L194.0 560.0 L204.5 560.0 L216.8 560.0 L228.8 560.0 L241.1 560.0 L253.2 560.0 L265.5 560.0 L279.8 560.0 L292.7 560.0 L305.6 560.0 L317.7 560.0 L330.5 560.0 L344.7 560.0 L358.8 560.0 L372.1 560.0 L387.8 560.0 L401.5 560.0 L417.3 560.0 L433.8 560.0 L448.6 560.0 L463.8 560.0 L477.8 560.0 L494.1 560.0 L513.4 560.0 L529.1 560.0 L546.0 560.0 L566.2 560.0" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M90.6 560.0 L98.4 560.0 L106.7 560.0 L116.4 560.0 L126.1 560.0 L136.1 560.0 L146.7 560.0 L158.2 560.0 L170.6 560.0 L183.5 560.0 L195.8 560.0 L208.0 560.0 L221.4 560.0 L236.0 560.0 L250.2 560.0 L264.8 560.0 L280.8 560.0 L298.1 560.0 L314.0 560.0 L329.6 560.0 L346.1 560.0 L362.6 560.0 L380.2 560.0 L396.5 560.0 L413.5 560.0 L430.0 560.0 L448.3 560.0 L466.3 560.0 L483.7 560.0 L501.1 560.0 L519.5 560.0 L537.9 560.0 L556.8 560.0 L577.5 560.0" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M104.2 560.0 L128.5 560.0 L152.7 560.0 L176.9 560.0 L201.1 560.0 L225.4 560.0 L249.6 560.0 L273.8 560.0 L298.0 560.0 L322.3 560.0 L346.5 560.0 L370.7 560.0 L394.9 560.0 L419.2 560.0 L443.4 560.0 L467.6 560.0 L491.8 560.0 L516.1 560.0 L540.3 560.0 L564.5 560.0" fill="none" stroke="#d62728" stroke-opacity="1" stroke-width="2.5" stroke-dasharray=""/>
+<line x1="670" y1="70" x2="690" y2="70" stroke="#d62728" stroke-width="2.5" stroke-dasharray=""/>
+<text x="696" y="74" font-size="12">neuralwatt/glm-5.3-flex English</text>
+<path d="M89.8 560.0 L98.1 520.8 L106.9 520.8 L115.5 520.8 L127.0 520.8 L139.2 481.5 L152.0 442.3 L164.4 442.3 L178.6 442.3 L194.7 403.1 L216.3 363.8 L233.7 363.8 L257.8 324.6 L274.2 324.6 L292.7 324.6 L309.1 324.6 L328.5 285.4 L350.5 285.4 L374.3 246.2 L396.5 246.2 L421.3 246.2 L446.2 246.2 L481.6 206.9 L514.7 206.9 L539.6 167.7 L585.4 128.5" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M92.2 560.0 L102.0 560.0 L113.3 560.0 L124.2 560.0 L136.9 520.8 L151.1 481.5 L165.1 481.5 L181.5 481.5 L195.4 442.3 L208.6 403.1 L223.3 403.1 L239.1 403.1 L255.0 403.1 L269.9 363.8 L285.5 363.8 L300.9 324.6 L314.6 324.6 L330.0 285.4 L345.1 285.4 L362.4 246.2 L379.3 246.2 L399.0 246.2 L420.5 246.2 L437.7 206.9 L457.5 206.9 L480.2 206.9 L501.5 167.7 L520.4 167.7 L539.5 128.5 L558.4 89.2 L578.8 50.0" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M92.1 560.0 L101.0 560.0 L110.9 520.8 L122.1 520.8 L134.6 520.8 L147.4 481.5 L160.4 481.5 L173.7 481.5 L187.1 481.5 L202.0 481.5 L215.2 442.3 L230.2 403.1 L244.9 403.1 L259.5 403.1 L274.4 403.1 L290.6 363.8 L305.4 324.6 L324.3 324.6 L339.7 324.6 L355.2 324.6 L372.0 285.4 L388.6 246.2 L407.3 246.2 L424.2 246.2 L445.2 206.9 L465.1 167.7 L487.9 128.5 L508.1 128.5 L530.7 128.5 L550.9 89.2 L573.2 89.2" fill="none" stroke="#d62728" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M104.2 546.9 L128.5 533.8 L152.7 468.5 L176.9 468.5 L201.1 442.3 L225.4 403.1 L249.6 390.0 L273.8 363.8 L298.0 350.8 L322.3 324.6 L346.5 298.5 L370.7 285.4 L394.9 246.2 L419.2 246.2 L443.4 233.1 L467.6 206.9 L491.8 180.8 L516.1 167.7 L540.3 141.5 L564.5 115.4" fill="none" stroke="#d62728" stroke-opacity="1" stroke-width="2.5" stroke-dasharray="7 5"/>
+<line x1="670" y1="92" x2="690" y2="92" stroke="#d62728" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text x="696" y="96" font-size="12">neuralwatt/glm-5.3-flex Russian</text>
+<path d="M91.2 560.0 L99.9 560.0 L126.0 560.0 L145.2 560.0 L176.0 560.0 L253.6 560.0 L331.0 560.0 L385.6 560.0 L455.5 560.0 L522.1 560.0 L603.6 560.0" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M92.7 560.0 L116.1 560.0 L141.4 560.0 L177.0 560.0 L213.6 560.0 L251.9 560.0 L296.1 560.0 L352.2 560.0 L434.2 560.0 L525.1 560.0 L614.8 560.0" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M92.3 560.0 L101.9 560.0 L111.2 560.0 L121.8 560.0 L144.8 560.0 L167.5 560.0 L212.0 560.0 L242.2 560.0 L299.8 560.0 L341.8 560.0 L397.3 560.0 L462.5 560.0 L526.1 560.0 L590.1 560.0" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray=""/>
+<path d="M104.2 560.0 L128.5 560.0 L152.7 560.0 L176.9 560.0 L201.1 560.0 L225.4 560.0 L249.6 560.0 L273.8 560.0 L298.0 560.0 L322.3 560.0 L346.5 560.0 L370.7 560.0 L394.9 560.0 L419.2 560.0 L443.4 560.0 L467.6 560.0 L491.8 560.0 L516.1 560.0 L540.3 560.0 L564.5 560.0 L588.7 560.0" fill="none" stroke="#2ca02c" stroke-opacity="1" stroke-width="2.5" stroke-dasharray=""/>
+<line x1="670" y1="114" x2="690" y2="114" stroke="#2ca02c" stroke-width="2.5" stroke-dasharray=""/>
+<text x="696" y="118" font-size="12">zai/glm-5.3 English</text>
+<path d="M92.3 520.8 L101.5 520.8 L113.8 520.8 L125.9 481.5 L138.3 481.5 L151.7 481.5 L164.0 481.5 L177.1 481.5 L190.4 442.3 L203.8 442.3 L220.5 403.1 L240.5 403.1 L259.2 363.8 L287.6 324.6 L314.8 324.6 L349.6 285.4 L381.1 246.2 L414.2 206.9 L444.6 167.7 L506.7 167.7 L541.7 128.5 L579.6 128.5" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M93.2 520.8 L102.6 481.5 L116.9 481.5 L131.8 481.5 L181.0 442.3 L203.3 403.1 L229.9 403.1 L262.4 403.1 L324.6 403.1 L391.9 403.1 L479.3 403.1 L526.6 363.8 L624.1 324.6" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M92.1 560.0 L102.9 520.8 L135.1 520.8 L150.3 520.8 L207.3 520.8 L281.6 481.5 L322.1 481.5 L410.3 481.5 L537.2 481.5 L640.0 481.5" fill="none" stroke="#2ca02c" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M104.2 507.7 L128.5 494.6 L152.7 494.6 L176.9 494.6 L201.1 468.5 L225.4 442.3 L249.6 442.3 L273.8 429.2 L298.0 403.1 L322.3 403.1 L346.5 403.1 L370.7 390.0 L394.9 376.9 L419.2 363.8 L443.4 363.8 L467.6 350.8 L491.8 350.8 L516.1 350.8 L540.3 337.7 L564.5 324.6" fill="none" stroke="#2ca02c" stroke-opacity="1" stroke-width="2.5" stroke-dasharray="7 5"/>
+<line x1="670" y1="136" x2="690" y2="136" stroke="#2ca02c" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text x="696" y="140" font-size="12">zai/glm-5.3 Russian</text>
+</svg>
