@@ -133,9 +133,10 @@ function render(
   parts.push(`<rect width="${width}" height="${height}" fill="white"/>`, `<text x="${left}" y="28" font-size="15">${escape(title)}</text>`);
 
   const yStep = niceStep(yMax);
-  for (let y = 0; y <= yMax; y += yStep) {
+  for (let i = 0; i <= Math.round(yMax / yStep); i++) {
+    const y = i * yStep;
     parts.push(`<line x1="${left}" y1="${sy(y)}" x2="${left + plotW}" y2="${sy(y)}" stroke="#e5e5e5"/>`);
-    parts.push(`<text x="${left - 8}" y="${sy(y) + 4}" font-size="12" text-anchor="end">${y}</text>`);
+    parts.push(`<text x="${left - 8}" y="${sy(y) + 4}" font-size="12" text-anchor="end">${Number(y.toFixed(2))}</text>`);
   }
   const xStep = niceStep(xMax);
   for (let x = 0; x <= xMax; x += xStep) {
