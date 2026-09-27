@@ -1,5 +1,0 @@
-{
-  "targetTokens": 50000,
-  "models": [{ "model": "kimi-coding/k3-256k" }],
-  "languages": ["Russian"]
-}
